@@ -9,7 +9,23 @@
 </head>
 
 <body>
-  
+  <form name="getTickets" method="GET" action="http://localhost:7070">
+    <!-- <input type="text" name="method" value="allTickets" hidden> -->
+    <input type="submit" value="Get all tickets">
+  </form>
+  <form name="getTicket" method="GET" action="http://localhost:7070">
+    <!-- <input type="text" name="method" value="ticketById" hidden> -->
+    <input type="text" name="id" placeholder="Ticket Id">
+    <input type="submit" value="Get ticket">
+  </form>
+  <form name="createTicket" method="POST" action="http://localhost:7070">
+    <!-- <input type="text" name="method" value="createTicket" hidden> -->
+    <input type="text" name="name" placeholder="Ticket name">
+    <input type="text" name="description" placeholder="Ticket description">
+    <label for="status">Ticket status</label>
+    <input type="checkbox" name="status">
+    <input type="submit" value="Create ticket">
+  </form>
 </body>
 
 </html>
