@@ -25,6 +25,8 @@ getTicketForm.addEventListener('submit', (submit) => {
       }
     });
     xhr.send();
+
+    getTicketForm.id.value = '';
   }
 });
 
