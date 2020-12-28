@@ -5,11 +5,13 @@ export default class Control {
     this.modalBackground = document.querySelector('.modal-background');
     this.createTicketForm = document.querySelector('[name="createTicket"]');
     this.editTicketForm = document.querySelector('[name="editTicket"]');
+    this.deleteTicketAlert = document.querySelector('.ticket-delete-alert');
 
     document.querySelector('.add-ticket').addEventListener('click', this.addTicketBtnHandler.bind(this));
     this.parentEl.addEventListener('click', this.cancelBtnHandler.bind(this));
     document.addEventListener('click', this.ticketDescriptionHandler.bind(this));
     this.parentEl.addEventListener('click', this.ticketEditHandler.bind(this));
+    this.parentEl.addEventListener('click', this.ticketDeleteHandler.bind(this));
   }
 
   addTicketBtnHandler() {
@@ -26,6 +28,8 @@ export default class Control {
         parentForm.description.value = '';
         parentForm.classList.add('hidden');
         this.ticketToEditId = null;
+      } else {
+        click.target.closest('.ticket-delete-alert').classList.add('hidden');
       }
     }
   }
@@ -45,6 +49,14 @@ export default class Control {
       this.ticketToEditId = click.target.closest('.ticket').dataset.id;
       this.modalBackground.classList.remove('hidden');
       this.editTicketForm.classList.remove('hidden');
+    }
+  }
+
+  ticketDeleteHandler(click) {
+    if (click.target.classList.contains('ticket-delete')) {
+      this.ticketToDeleteId = click.target.closest('.ticket').dataset.id;
+      this.modalBackground.classList.remove('hidden');
+      this.deleteTicketAlert.classList.remove('hidden');
     }
   }
 }

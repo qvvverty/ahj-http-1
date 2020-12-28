@@ -81,7 +81,7 @@
   opacity: 0.4;
 }
 
-.ticket-form {
+.ticket-form, .ticket-delete-alert {
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -122,6 +122,10 @@
 .ticket-description-input {
   height: 65px;
   resize: none;
+}
+
+.delete-ticket-warning {
+  line-height: 25px;
 }
 
 .hidden {
