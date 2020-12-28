@@ -9,23 +9,85 @@
 </head>
 
 <body>
-  <form name="getTickets" method="GET" action="http://localhost:7070">
-    <!-- <input type="text" name="method" value="allTickets" hidden> -->
+  <div class="helpdesk-container">
+    <div class="ticket-buttons-container">
+      <div class="ticket-button add-ticket">Добавить тикет</div>
+    </div>
+    <div class="tickets-container">
+      <div class="ticket" data-id="1">
+        <div class="ticket-name-container">
+          <input class="status-checkbox" type="checkbox" name="status">
+          <p class="ticket-name">
+            Some ticket information.
+          </p>
+        </div>
+        <div class="ticket-date-container">
+          <p class="ticket-time">
+            12.12.2020 13:13
+          </p>
+          <div class="ticket-edit">✎</div>
+          <div class="ticket-delete">×</div>
+        </div>
+        <p class="ticket-description hidden">
+          Lorem ipsum
+          Lorem ipsum
+          Lorem ipsum
+          Lorem ipsum
+          Lorem ipsum
+          Lorem ipsum
+          Lorem ipsum
+          Lorem ipsum
+          Lorem ipsum
+          Lorem ipsum
+          Lorem ipsum
+          Lorem ipsum
+          Lorem ipsum
+        </p>
+      </div>
+    </div>
+
+    <div class="modal-background hidden"></div>
+    <form class="ticket-form hidden" name="createTicket" method="POST" action="http://localhost:7070">
+      <p class="ticket-form-header">
+        Добавить тикет
+      </p>
+      <input class="ticket-name-input" type="text" name="name" placeholder="Краткое описание">
+      <!-- <input type="text" name="description" placeholder="Ticket description"> -->
+      <textarea class="ticket-description-input" type="text" name="description"
+        placeholder="Подробное описание"></textarea>
+      <!-- <label for="status">Ticket status</label> -->
+      <!-- <input type="checkbox" name="status"> -->
+      <!-- <input type="submit" value="Create ticket"> -->
+      <div class="ticket-buttons-container">
+        <div class="ticket-button cancel">Отмена</div>
+        <div class="ticket-button ok">Ok</div>
+      </div>
+    </form>
+    <form class="ticket-form hidden" name="editTicket" method="POST" action="http://localhost:7070">
+      <p class="ticket-form-header">
+        Изменить тикет
+      </p>
+      <input class="ticket-name-input" type="text" name="name" placeholder="Краткое описание">
+      <!-- <input type="text" name="description" placeholder="Ticket description"> -->
+      <textarea class="ticket-description-input" type="text" name="description"
+        placeholder="Подробное описание"></textarea>
+      <!-- <label for="status">Ticket status</label> -->
+      <!-- <input type="checkbox" name="status"> -->
+      <!-- <input type="submit" value="Create ticket"> -->
+      <div class="ticket-buttons-container">
+        <div class="ticket-button cancel">Отмена</div>
+        <div class="ticket-button ok">Ok</div>
+      </div>
+    </form>
+  </div>
+
+  <!-- <form name="getTickets" method="GET" action="http://localhost:7070">
     <input type="submit" value="Get all tickets">
   </form>
   <form name="getTicket" method="GET" action="http://localhost:7070">
-    <!-- <input type="text" name="method" value="ticketById" hidden> -->
     <input type="text" name="id" placeholder="Ticket Id">
     <input type="submit" value="Get ticket">
-  </form>
-  <form name="createTicket" method="POST" action="http://localhost:7070">
-    <!-- <input type="text" name="method" value="createTicket" hidden> -->
-    <input type="text" name="name" placeholder="Ticket name">
-    <input type="text" name="description" placeholder="Ticket description">
-    <label for="status">Ticket status</label>
-    <input type="checkbox" name="status">
-    <input type="submit" value="Create ticket">
-  </form>
+  </form> -->
 </body>
 
 </html>
