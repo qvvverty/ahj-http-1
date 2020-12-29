@@ -10,36 +10,7 @@ export default class Renderer {
   renderTickets(ticketsString) {
     const tickets = JSON.parse(ticketsString);
     for (const ticket of tickets) {
-      const date = new Date(Date.parse(ticket.created));
-      const dateFormatted = date.toLocaleString('ru', {
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-
-      const ticketEl = document.createElement('div');
-      ticketEl.classList.add('ticket');
-      ticketEl.dataset.id = ticket.id;
-      ticketEl.innerHTML = `
-        <div class="ticket-name-container">
-          <input class="status-checkbox" type="checkbox" name="status">
-          <p class="ticket-name">
-            ${ticket.name}
-          </p>
-        </div>
-        <div class="ticket-date-container">
-          <p class="ticket-time">
-            ${dateFormatted}
-          </p>
-          <div class="ticket-edit">✎</div>
-          <div class="ticket-delete">×</div>
-        </div>
-        <p class="ticket-description hidden">
-        </p>
-      `;
-      this.ticketsContainer.append(ticketEl);
+      this.renderTicket(ticket);
     }
   }
 
@@ -52,5 +23,38 @@ export default class Renderer {
       }
     });
     xhr.send();
+  }
+
+  renderTicket(ticket) {
+    const date = new Date(Date.parse(ticket.created));
+    const dateFormatted = date.toLocaleString('ru', {
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    const ticketEl = document.createElement('div');
+    ticketEl.classList.add('ticket');
+    ticketEl.dataset.id = ticket.id;
+    ticketEl.innerHTML = `
+      <div class="ticket-name-container">
+        <input class="status-checkbox" type="checkbox" name="status">
+        <p class="ticket-name">
+          ${ticket.name}
+        </p>
+      </div>
+      <div class="ticket-date-container">
+        <p class="ticket-time">
+          ${dateFormatted}
+        </p>
+        <div class="ticket-edit">✎</div>
+        <div class="ticket-delete">×</div>
+      </div>
+      <p class="ticket-description hidden">
+      </p>
+    `;
+    this.ticketsContainer.append(ticketEl);
   }
 }

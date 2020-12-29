@@ -1,14 +1,14 @@
-export default class TicketFull {
+class TicketFull {
   constructor(ticketRaw) {
     this.id = ticketRaw.id;
     this.name = ticketRaw.name;
     this.description = ticketRaw.description;
     this.status = ticketRaw.status;
-    this.created = new Date();
+    this.created = ticketRaw.created;
   }
 }
 
-export class Ticket {
+class Ticket {
   constructor(ticketFull) {
     this.id = ticketFull.id;
     this.name = ticketFull.name;
@@ -16,3 +16,6 @@ export class Ticket {
     this.created = ticketFull.created;
   }
 }
+
+module.exports.TicketFull = TicketFull;
+module.exports.Ticket = Ticket;

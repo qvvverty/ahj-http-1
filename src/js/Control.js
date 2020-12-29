@@ -15,6 +15,7 @@ export default class Control {
     this.deleteTicketAlert = document.querySelector('.ticket-delete-alert');
 
     document.querySelector('.add-ticket').addEventListener('click', this.addTicketBtnHandler.bind(this));
+    this.parentEl.addEventListener('click', this.okBtnHandler.bind(this));
     this.parentEl.addEventListener('click', this.cancelBtnHandler.bind(this));
     document.addEventListener('click', this.ticketDescriptionHandler.bind(this));
     this.parentEl.addEventListener('click', this.ticketEditHandler.bind(this));
@@ -41,13 +42,47 @@ export default class Control {
     }
   }
 
-  ticketDescriptionHandler(click) {
+  ticketDescriptionHandler(click) { // можно ещё улучшить
     if (click.target.classList.contains('ticket-name')) {
+      if (this.openedTicketDescription) this.openedTicketDescription.classList.add('hidden');
+
       this.openedTicketDescription = click.target.closest('.ticket').querySelector('.ticket-description');
-      this.openedTicketDescription.classList.remove('hidden');
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', `http://localhost:7070/?method=ticketById&id=${click.target.closest('.ticket').dataset.id}`);
+      xhr.addEventListener('readystatechange', () => {
+        if (xhr.readyState === 4) {
+          this.openedTicketDescription.innerText = xhr.response;
+          this.openedTicketDescription.classList.remove('hidden');
+        }
+      });
+      xhr.send();
     } else if (this.openedTicketDescription && click.target !== this.openedTicketDescription) {
       this.openedTicketDescription.classList.add('hidden');
       this.openedTicketDescription = null;
+    }
+  }
+
+  okBtnHandler(click) {
+    if (click.target.classList.contains('ok')) {
+      if (click.target.closest('form') === this.createTicketForm) {
+        const formData = new FormData(this.createTicketForm);
+        if (formData.get('name') && formData.get('description')) {
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', 'http://localhost:7070?method=createTicket');
+          xhr.addEventListener('readystatechange', () => {
+            if (xhr.readyState === 4) {
+              this.renderer.renderTicket(JSON.parse(xhr.response));
+            }
+          });
+          xhr.send(formData);
+
+          this.createTicketForm.classList.add('hidden');
+          this.modalBackground.classList.add('hidden');
+          this.createTicketForm.name.value = '';
+          this.createTicketForm.description.value = '';
+        }
+      }
     }
   }
 

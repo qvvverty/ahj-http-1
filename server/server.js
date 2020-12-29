@@ -2,7 +2,9 @@ const http = require('http');
 const Koa = require('koa');
 const koaBody = require('koa-body');
 const fs = require('fs');
-// import TicketFull, { Ticket } from './Ticket';
+const ticketsModule = require('./Ticket')
+const TicketFull = ticketsModule.TicketFull;
+const Ticket = ticketsModule.Ticket;
 
 const app = new Koa();
 
@@ -37,7 +39,8 @@ app.use(koaBody({
 //   }
 // ];
 
-let tickets = [];
+let ticketsRaw = [];
+const tickets = [];
 fs.readFile('./server/tickets.json', 'utf8', (readErr, data) => {
   if (readErr) {
     console.error(readErr);
@@ -45,9 +48,14 @@ fs.readFile('./server/tickets.json', 'utf8', (readErr, data) => {
   }
 
   try {
-    tickets = JSON.parse(data);
+    ticketsRaw = JSON.parse(data);
   } catch (parseErr) {
     console.error(parseErr);
+    return;
+  }
+
+  for (const ticketRaw of ticketsRaw) {
+    tickets.push(new TicketFull(ticketRaw));
   }
 });
 
@@ -64,14 +72,20 @@ app.use(async (ctx) => {
 
   switch (method) {
     case 'allTickets':
-      ctx.response.body = JSON.stringify(tickets);
+      const allTickets = [];
+      for (ticketFull of tickets) {
+        allTickets.push(new Ticket(ticketFull));
+      }
+      ctx.response.body = JSON.stringify(allTickets);
+      // ctx.response.body = JSON.stringify(tickets);
       break;
 
     case 'ticketById':
       if (ctx.request.query.id) {
         for (const ticket of tickets) {
           if (ticket.id === +ctx.request.query.id) {
-            ctx.response.body = JSON.stringify(ticket);
+            // ctx.response.body = JSON.stringify(ticket);
+            ctx.response.body = ticket.description;
             return;
           }
         }
@@ -88,8 +102,8 @@ app.use(async (ctx) => {
       Object.assign(newTicket, ctx.request.body);
       newTicket.status = newTicket.status === 'true';
       newTicket.created = new Date();
-      tickets.push(newTicket);
-      console.log(tickets);
+      tickets.push(new TicketFull(newTicket));
+      ctx.response.body = JSON.stringify(new Ticket(tickets[tickets.length - 1]));
 
       try {
         fs.writeFile('./server/tickets.json', JSON.stringify(tickets), (err) => {
