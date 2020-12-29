@@ -1,8 +1,13 @@
-import Request from './Request';
+// import Request from './Request';
+import Renderer from './Renderer';
 
 export default class Control {
   bindToDOM(parentEl) {
     this.parentEl = parentEl;
+
+    this.renderer = new Renderer();
+    this.renderer.bindToDOM(this.parentEl.querySelector('.tickets-container'));
+    this.renderer.render();
 
     this.modalBackground = document.querySelector('.modal-background');
     this.createTicketForm = document.querySelector('[name="createTicket"]');
