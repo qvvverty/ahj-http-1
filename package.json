@@ -16,8 +16,8 @@
     "show:doc": "live-server doc",
     "preshow:dist": "npm run build",
     "show:dist": "live-server dist",
-    "server:start": "forever server.js",
-    "server:watch": "forever -w server.js"
+    "server:start": "forever ./server/server.js",
+    "server:watch": "forever -w ./server/server.js"
   },
   "author": "coursar",
   "license": "MIT",

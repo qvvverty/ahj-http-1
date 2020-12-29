@@ -1,3 +1,5 @@
+import Request from './Request';
+
 export default class Control {
   bindToDOM(parentEl) {
     this.parentEl = parentEl;

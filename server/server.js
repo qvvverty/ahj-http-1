@@ -2,6 +2,7 @@ const http = require('http');
 const Koa = require('koa');
 const koaBody = require('koa-body');
 const fs = require('fs');
+// import TicketFull, { Ticket } from './Ticket';
 
 const app = new Koa();
 
@@ -37,7 +38,7 @@ app.use(koaBody({
 // ];
 
 let tickets = [];
-fs.readFile('tickets.json', 'utf8', (readErr, data) => {
+fs.readFile('./server/tickets.json', 'utf8', (readErr, data) => {
   if (readErr) {
     console.error(readErr);
     return;
@@ -91,7 +92,7 @@ app.use(async (ctx) => {
       console.log(tickets);
 
       try {
-        fs.writeFile('tickets.json', JSON.stringify(tickets), (err) => {
+        fs.writeFile('./server/tickets.json', JSON.stringify(tickets), (err) => {
           if (err) {
             console.error(err);
           }
