@@ -8,7 +8,7 @@ const Ticket = ticketsModule.Ticket;
 
 const app = new Koa();
 
-const port = 7070;
+const port = process.env.PORT || 7070;
 
 function saveState() {
   try {
@@ -59,7 +59,7 @@ app.use(koaBody({
 
 let ticketsRaw = [];
 const tickets = [];
-fs.readFile('./server/tickets.json', 'utf8', (readErr, data) => {
+fs.readFile('./tickets.json', 'utf8', (readErr, data) => {
   if (readErr) {
     console.error(readErr);
     return;
@@ -79,7 +79,7 @@ fs.readFile('./server/tickets.json', 'utf8', (readErr, data) => {
 
 app.use(async (ctx, next) => {
   ctx.response.set({
-    'Access-Control-Allow-Origin': 'http://localhost:8080',
+    'Access-Control-Allow-Origin': 'https://qvvverty.github.io/ahj-http-1/',
   });
   await next();
 });
