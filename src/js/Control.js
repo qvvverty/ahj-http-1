@@ -20,6 +20,7 @@ export default class Control {
     document.addEventListener('click', this.ticketDescriptionHandler.bind(this));
     this.parentEl.addEventListener('click', this.ticketEditHandler.bind(this));
     this.parentEl.addEventListener('click', this.ticketDeleteHandler.bind(this));
+    this.parentEl.addEventListener('change', Control.ticketStatusHandler);
   }
 
   addTicketBtnHandler() {
@@ -35,7 +36,7 @@ export default class Control {
         parentForm.name.value = '';
         parentForm.description.value = '';
         parentForm.classList.add('hidden');
-        this.ticketToEditId = null;
+        this.ticketToEdit = null;
       } else {
         click.target.closest('.ticket-delete-alert').classList.add('hidden');
       }
@@ -82,13 +83,45 @@ export default class Control {
           this.createTicketForm.name.value = '';
           this.createTicketForm.description.value = '';
         }
+      } else if (click.target.closest('.ticket-delete-alert') && this.ticketToDelete) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', `http://localhost:7070?method=deleteTicket&id=${this.ticketToDelete.dataset.id}`);
+        xhr.addEventListener('readystatechange', () => {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            this.ticketToDelete.remove();
+            this.modalBackground.classList.add('hidden');
+            this.deleteTicketAlert.classList.add('hidden');
+          }
+        });
+        xhr.send();
+      } else if (click.target.closest('form') === this.editTicketForm) {
+        const formData = new FormData(this.editTicketForm);
+        formData.set('id', this.ticketToEdit.dataset.id);
+        if (formData.get('name') && formData.get('description')) {
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', 'http://localhost:7070?method=editTicket');
+          xhr.addEventListener('readystatechange', () => {
+            if (xhr.readyState === 4) {
+              this.ticketToEdit.querySelector('.ticket-name').innerText = formData.get('name');
+              this.ticketToEdit.querySelector('.ticket-description').innerText = formData.get('description');
+              // this.renderer.renderTicket(JSON.parse(xhr.response));
+            }
+          });
+          xhr.send(formData);
+
+          this.editTicketForm.classList.add('hidden');
+          this.modalBackground.classList.add('hidden');
+          this.editTicketForm.name.value = '';
+          this.editTicketForm.description.value = '';
+        }
       }
     }
   }
 
   ticketEditHandler(click) {
     if (click.target.classList.contains('ticket-edit')) {
-      this.ticketToEditId = click.target.closest('.ticket').dataset.id;
+      // this.ticketToEditId = click.target.closest('.ticket').dataset.id;
+      this.ticketToEdit = click.target.closest('.ticket');
       this.modalBackground.classList.remove('hidden');
       this.editTicketForm.classList.remove('hidden');
     }
@@ -96,9 +129,27 @@ export default class Control {
 
   ticketDeleteHandler(click) {
     if (click.target.classList.contains('ticket-delete')) {
-      this.ticketToDeleteId = click.target.closest('.ticket').dataset.id;
+      // this.ticketToDeleteId = click.target.closest('.ticket').dataset.id;
+      this.ticketToDelete = click.target.closest('.ticket');
       this.modalBackground.classList.remove('hidden');
       this.deleteTicketAlert.classList.remove('hidden');
+    }
+  }
+
+  static ticketStatusHandler(event) {
+    if (event.target.classList.contains('status-checkbox')) {
+      const checkbox = event.target;
+      const formData = new FormData();
+      formData.set('id', checkbox.closest('.ticket').dataset.id);
+      formData.set('status', checkbox.checked);
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', 'http://localhost:7070?method=changeStatus');
+      xhr.addEventListener('readystatechange', () => {
+        if (xhr.readyState === 4 && xhr.status !== 200) {
+          checkbox.checked = !checkbox.checked;
+        }
+      });
+      xhr.send(formData);
     }
   }
 }

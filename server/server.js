@@ -10,6 +10,24 @@ const app = new Koa();
 
 const port = 7070;
 
+function saveState() {
+  try {
+    fs.writeFile('./server/tickets.json', JSON.stringify(tickets), (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function findTicket(id) {
+  for (const ticket of tickets) {
+    if (ticket.id === +id) return ticket;
+  }
+}
+
 app.use(koaBody({
   // urlencoded: true,
   multipart: true,
@@ -82,13 +100,14 @@ app.use(async (ctx) => {
 
     case 'ticketById':
       if (ctx.request.query.id) {
-        for (const ticket of tickets) {
-          if (ticket.id === +ctx.request.query.id) {
-            // ctx.response.body = JSON.stringify(ticket);
-            ctx.response.body = ticket.description;
-            return;
-          }
-        }
+        // for (const ticket of tickets) {
+        //   if (ticket.id === +ctx.request.query.id) {
+        //     // ctx.response.body = JSON.stringify(ticket);
+        //     ctx.response.body = ticket.description;
+        //     return;
+        //   }
+        // }
+        ctx.response.body = findTicket(ctx.request.query.id).description;
       }
       break;
 
@@ -105,19 +124,74 @@ app.use(async (ctx) => {
       tickets.push(new TicketFull(newTicket));
       ctx.response.body = JSON.stringify(new Ticket(tickets[tickets.length - 1]));
 
-      try {
-        fs.writeFile('./server/tickets.json', JSON.stringify(tickets), (err) => {
-          if (err) {
-            console.error(err);
-          }
-        });
-      } catch (err) {
-        console.error(err);
-      }
+      // try {
+      //   fs.writeFile('./server/tickets.json', JSON.stringify(tickets), (err) => {
+      //     if (err) {
+      //       console.error(err);
+      //     }
+      //   });
+      // } catch (err) {
+      //   console.error(err);
+      // }
 
       ctx.response.status = 200;
+
+      saveState();
       break;
     }
+
+    case 'deleteTicket': {
+      if (ctx.request.query.id) {
+        tickets.forEach((ticket, index) => {
+          if (ticket.id === +ctx.request.query.id) {
+            tickets.splice(index, 1);
+            ctx.response.status = 200;
+            saveState();
+            return;
+          }
+        });
+      }
+      break;
+    }
+
+    case 'editTicket': {
+      // for (const ticket of tickets) {
+      //   if (ticket.id === +ctx.request.body.id) {
+      //     ticket.name = ctx.request.body.name;
+      //     ticket.description = ctx.request.body.description;
+
+      //     ctx.response.status = 200;
+      //     saveState();
+      //     return;
+      //   }
+      // }
+      const ticketToEdit = findTicket(ctx.request.body.id);
+      ticketToEdit.name = ctx.request.body.name;
+      ticketToEdit.description = ctx.request.body.description;
+
+      ctx.response.status = 200;
+      saveState();
+      break;
+    }
+
+    case 'changeStatus': {
+      // for (const ticket of tickets) {
+      //   if (ticket.id === +ctx.request.body.id) {
+      //     ticket.status = ctx.request.body.status === 'true';
+
+      //     ctx.response.status = 200;
+      //     saveState();
+      //     return;
+      //   }
+      // }
+      const ticketToEdit = findTicket(ctx.request.body.id);
+      ticketToEdit.status = ctx.request.body.status === 'true';
+
+      ctx.response.status = 200;
+      saveState();
+      break;
+    }
+
     default:
       ctx.response.status = 400;
   }

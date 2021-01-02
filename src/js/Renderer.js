@@ -55,6 +55,7 @@ export default class Renderer {
       <p class="ticket-description hidden">
       </p>
     `;
+    ticketEl.querySelector('.status-checkbox').checked = ticket.status;
     this.ticketsContainer.append(ticketEl);
   }
 }
