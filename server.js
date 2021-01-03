@@ -12,7 +12,7 @@ const port = process.env.PORT || 7070;
 
 function saveState() {
   try {
-    fs.writeFile('./server/tickets.json', JSON.stringify(tickets), (err) => {
+    fs.writeFile('./tickets.json', JSON.stringify(tickets), (err) => {
       if (err) {
         console.error(err);
       }
