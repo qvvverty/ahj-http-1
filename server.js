@@ -29,33 +29,8 @@ function findTicket(id) {
 }
 
 app.use(koaBody({
-  // urlencoded: true,
   multipart: true,
 }));
-
-// const tickets = [
-//   {
-//     id: 1,
-//     name: 'Feed cat',
-//     description: 'Cat must be fed no matter what!',
-//     status: true,
-//     created: new Date()
-//   },
-//   {
-//     id: 2,
-//     name: 'Wash hands',
-//     description: 'Must wash hands!',
-//     status: false,
-//     created: new Date()
-//   },
-//   {
-//     id: 3,
-//     name: 'Call Gennadiy',
-//     description: 'Gennadiy is waiting...',
-//     status: false,
-//     created: new Date()
-//   }
-// ];
 
 let ticketsRaw = [];
 const tickets = [];
@@ -95,18 +70,10 @@ app.use(async (ctx) => {
         allTickets.push(new Ticket(ticketFull));
       }
       ctx.response.body = JSON.stringify(allTickets);
-      // ctx.response.body = JSON.stringify(tickets);
       break;
 
     case 'ticketById':
       if (ctx.request.query.id) {
-        // for (const ticket of tickets) {
-        //   if (ticket.id === +ctx.request.query.id) {
-        //     // ctx.response.body = JSON.stringify(ticket);
-        //     ctx.response.body = ticket.description;
-        //     return;
-        //   }
-        // }
         ctx.response.body = findTicket(ctx.request.query.id).description;
       }
       break;
@@ -124,18 +91,7 @@ app.use(async (ctx) => {
       tickets.push(new TicketFull(newTicket));
       ctx.response.body = JSON.stringify(new Ticket(tickets[tickets.length - 1]));
 
-      // try {
-      //   fs.writeFile('./server/tickets.json', JSON.stringify(tickets), (err) => {
-      //     if (err) {
-      //       console.error(err);
-      //     }
-      //   });
-      // } catch (err) {
-      //   console.error(err);
-      // }
-
       ctx.response.status = 200;
-
       saveState();
       break;
     }
@@ -155,16 +111,6 @@ app.use(async (ctx) => {
     }
 
     case 'editTicket': {
-      // for (const ticket of tickets) {
-      //   if (ticket.id === +ctx.request.body.id) {
-      //     ticket.name = ctx.request.body.name;
-      //     ticket.description = ctx.request.body.description;
-
-      //     ctx.response.status = 200;
-      //     saveState();
-      //     return;
-      //   }
-      // }
       const ticketToEdit = findTicket(ctx.request.body.id);
       ticketToEdit.name = ctx.request.body.name;
       ticketToEdit.description = ctx.request.body.description;
@@ -175,15 +121,6 @@ app.use(async (ctx) => {
     }
 
     case 'changeStatus': {
-      // for (const ticket of tickets) {
-      //   if (ticket.id === +ctx.request.body.id) {
-      //     ticket.status = ctx.request.body.status === 'true';
-
-      //     ctx.response.status = 200;
-      //     saveState();
-      //     return;
-      //   }
-      // }
       const ticketToEdit = findTicket(ctx.request.body.id);
       ticketToEdit.status = ctx.request.body.status === 'true';
 
@@ -196,8 +133,6 @@ app.use(async (ctx) => {
       ctx.response.body = "I'm not sleeping!";
       ctx.response.status = 200;
   }
-
-  // console.log('\x1b[33m>>>\x1b[0m');
 });
 
 const server = http.createServer(app.callback());
