@@ -50,7 +50,7 @@ export default class Control {
       this.openedTicketDescription = click.target.closest('.ticket').querySelector('.ticket-description');
 
       const xhr = new XMLHttpRequest();
-      xhr.open('GET', `http://localhost:7070/?method=ticketById&id=${click.target.closest('.ticket').dataset.id}`);
+      xhr.open('GET', `https://obscure-depths.herokuapp.com/?method=ticketById&id=${click.target.closest('.ticket').dataset.id}`);
       xhr.addEventListener('readystatechange', () => {
         if (xhr.readyState === 4) {
           this.openedTicketDescription.innerText = xhr.response;
@@ -70,7 +70,7 @@ export default class Control {
         const formData = new FormData(this.createTicketForm);
         if (formData.get('name') && formData.get('description')) {
           const xhr = new XMLHttpRequest();
-          xhr.open('POST', 'http://localhost:7070?method=createTicket');
+          xhr.open('POST', 'https://obscure-depths.herokuapp.com/?method=createTicket');
           xhr.addEventListener('readystatechange', () => {
             if (xhr.readyState === 4) {
               this.renderer.renderTicket(JSON.parse(xhr.response));
@@ -85,7 +85,7 @@ export default class Control {
         }
       } else if (click.target.closest('.ticket-delete-alert') && this.ticketToDelete) {
         const xhr = new XMLHttpRequest();
-        xhr.open('GET', `http://localhost:7070?method=deleteTicket&id=${this.ticketToDelete.dataset.id}`);
+        xhr.open('GET', `https://obscure-depths.herokuapp.com/?method=deleteTicket&id=${this.ticketToDelete.dataset.id}`);
         xhr.addEventListener('readystatechange', () => {
           if (xhr.readyState === 4 && xhr.status === 200) {
             this.ticketToDelete.remove();
@@ -99,7 +99,7 @@ export default class Control {
         formData.set('id', this.ticketToEdit.dataset.id);
         if (formData.get('name') && formData.get('description')) {
           const xhr = new XMLHttpRequest();
-          xhr.open('POST', 'http://localhost:7070?method=editTicket');
+          xhr.open('POST', 'https://obscure-depths.herokuapp.com/?method=editTicket');
           xhr.addEventListener('readystatechange', () => {
             if (xhr.readyState === 4) {
               this.ticketToEdit.querySelector('.ticket-name').innerText = formData.get('name');
@@ -143,7 +143,7 @@ export default class Control {
       formData.set('id', checkbox.closest('.ticket').dataset.id);
       formData.set('status', checkbox.checked);
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'http://localhost:7070?method=changeStatus');
+      xhr.open('POST', 'https://obscure-depths.herokuapp.com/?method=changeStatus');
       xhr.addEventListener('readystatechange', () => {
         if (xhr.readyState === 4 && xhr.status !== 200) {
           checkbox.checked = !checkbox.checked;

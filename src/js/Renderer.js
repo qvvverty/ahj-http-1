@@ -16,7 +16,7 @@ export default class Renderer {
 
   static requestTickets(callback) {
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://localhost:7070/?method=allTickets');
+    xhr.open('GET', 'https://obscure-depths.herokuapp.com/?method=allTickets');
     xhr.addEventListener('readystatechange', () => {
       if (xhr.readyState === 4) {
         callback(xhr.response);
