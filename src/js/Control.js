@@ -1,4 +1,3 @@
-// import Request from './Request';
 import Renderer from './Renderer';
 
 export default class Control {
@@ -43,7 +42,7 @@ export default class Control {
     }
   }
 
-  ticketDescriptionHandler(click) { // можно ещё улучшить
+  ticketDescriptionHandler(click) {
     if (click.target.classList.contains('ticket-name')) {
       if (this.openedTicketDescription) this.openedTicketDescription.classList.add('hidden');
 
@@ -67,60 +66,70 @@ export default class Control {
   okBtnHandler(click) {
     if (click.target.classList.contains('ok')) {
       if (click.target.closest('form') === this.createTicketForm) {
-        const formData = new FormData(this.createTicketForm);
-        if (formData.get('name') && formData.get('description')) {
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', 'https://obscure-depths.herokuapp.com/?method=createTicket');
-          xhr.addEventListener('readystatechange', () => {
-            if (xhr.readyState === 4) {
-              this.renderer.renderTicket(JSON.parse(xhr.response));
-            }
-          });
-          xhr.send(formData);
-
-          this.createTicketForm.classList.add('hidden');
-          this.modalBackground.classList.add('hidden');
-          this.createTicketForm.name.value = '';
-          this.createTicketForm.description.value = '';
-        }
+        this.createTicket();
       } else if (click.target.closest('.ticket-delete-alert') && this.ticketToDelete) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', `https://obscure-depths.herokuapp.com/?method=deleteTicket&id=${this.ticketToDelete.dataset.id}`);
-        xhr.addEventListener('readystatechange', () => {
-          if (xhr.readyState === 4 && xhr.status === 200) {
-            this.ticketToDelete.remove();
-            this.modalBackground.classList.add('hidden');
-            this.deleteTicketAlert.classList.add('hidden');
-          }
-        });
-        xhr.send();
+        this.deleteTicket();
       } else if (click.target.closest('form') === this.editTicketForm) {
-        const formData = new FormData(this.editTicketForm);
-        formData.set('id', this.ticketToEdit.dataset.id);
-        if (formData.get('name') && formData.get('description')) {
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', 'https://obscure-depths.herokuapp.com/?method=editTicket');
-          xhr.addEventListener('readystatechange', () => {
-            if (xhr.readyState === 4) {
-              this.ticketToEdit.querySelector('.ticket-name').innerText = formData.get('name');
-              this.ticketToEdit.querySelector('.ticket-description').innerText = formData.get('description');
-              // this.renderer.renderTicket(JSON.parse(xhr.response));
-            }
-          });
-          xhr.send(formData);
-
-          this.editTicketForm.classList.add('hidden');
-          this.modalBackground.classList.add('hidden');
-          this.editTicketForm.name.value = '';
-          this.editTicketForm.description.value = '';
-        }
+        this.editTicketForm();
       }
+    }
+  }
+
+  createTicket() {
+    const formData = new FormData(this.createTicketForm);
+    if (formData.get('name') && formData.get('description')) {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', 'https://obscure-depths.herokuapp.com/?method=createTicket');
+      xhr.addEventListener('readystatechange', () => {
+        if (xhr.readyState === 4) {
+          this.renderer.renderTicket(JSON.parse(xhr.response));
+        }
+      });
+      xhr.send(formData);
+
+      this.createTicketForm.classList.add('hidden');
+      this.modalBackground.classList.add('hidden');
+      this.createTicketForm.name.value = '';
+      this.createTicketForm.description.value = '';
+    }
+  }
+
+  deleteTicket() {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', `https://obscure-depths.herokuapp.com/?method=deleteTicket&id=${this.ticketToDelete.dataset.id}`);
+    xhr.addEventListener('readystatechange', () => {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        this.ticketToDelete.remove();
+        this.modalBackground.classList.add('hidden');
+        this.deleteTicketAlert.classList.add('hidden');
+      }
+    });
+    xhr.send();
+  }
+
+  editTicket() {
+    const formData = new FormData(this.editTicketForm);
+    formData.set('id', this.ticketToEdit.dataset.id);
+    if (formData.get('name') && formData.get('description')) {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', 'https://obscure-depths.herokuapp.com/?method=editTicket');
+      xhr.addEventListener('readystatechange', () => {
+        if (xhr.readyState === 4) {
+          this.ticketToEdit.querySelector('.ticket-name').innerText = formData.get('name');
+          this.ticketToEdit.querySelector('.ticket-description').innerText = formData.get('description');
+        }
+      });
+      xhr.send(formData);
+
+      this.editTicketForm.classList.add('hidden');
+      this.modalBackground.classList.add('hidden');
+      this.editTicketForm.name.value = '';
+      this.editTicketForm.description.value = '';
     }
   }
 
   ticketEditHandler(click) {
     if (click.target.classList.contains('ticket-edit')) {
-      // this.ticketToEditId = click.target.closest('.ticket').dataset.id;
       this.ticketToEdit = click.target.closest('.ticket');
       this.modalBackground.classList.remove('hidden');
       this.editTicketForm.classList.remove('hidden');
@@ -129,7 +138,6 @@ export default class Control {
 
   ticketDeleteHandler(click) {
     if (click.target.classList.contains('ticket-delete')) {
-      // this.ticketToDeleteId = click.target.closest('.ticket').dataset.id;
       this.ticketToDelete = click.target.closest('.ticket');
       this.modalBackground.classList.remove('hidden');
       this.deleteTicketAlert.classList.remove('hidden');
