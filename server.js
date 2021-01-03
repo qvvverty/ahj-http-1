@@ -79,7 +79,7 @@ fs.readFile('./tickets.json', 'utf8', (readErr, data) => {
 
 app.use(async (ctx, next) => {
   ctx.response.set({
-    'Access-Control-Allow-Origin': 'https://qvvverty.github.io/ahj-http-1/',
+    'Access-Control-Allow-Origin': 'https://qvvverty.github.io',
   });
   await next();
 });
@@ -193,10 +193,11 @@ app.use(async (ctx) => {
     }
 
     default:
-      ctx.response.status = 400;
+      ctx.response.body = "I'm not sleeping!";
+      ctx.response.status = 200;
   }
 
-  console.log('\x1b[33m>>>\x1b[0m');
+  // console.log('\x1b[33m>>>\x1b[0m');
 });
 
 const server = http.createServer(app.callback());
