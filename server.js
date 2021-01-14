@@ -10,18 +10,6 @@ const app = new Koa();
 
 const port = process.env.PORT || 7070;
 
-function saveState() {
-  try {
-    fs.writeFile('./tickets.json', JSON.stringify(tickets), (err) => {
-      if (err) {
-        console.error(err);
-      }
-    });
-  } catch (err) {
-    console.error(err);
-  }
-}
-
 function findTicket(id) {
   for (const ticket of tickets) {
     if (ticket.id === +id) return ticket;
@@ -92,7 +80,6 @@ app.use(async (ctx) => {
       ctx.response.body = JSON.stringify(new Ticket(tickets[tickets.length - 1]));
 
       ctx.response.status = 200;
-      saveState();
       break;
     }
 
@@ -102,7 +89,6 @@ app.use(async (ctx) => {
           if (ticket.id === +ctx.request.query.id) {
             tickets.splice(index, 1);
             ctx.response.status = 200;
-            saveState();
             return;
           }
         });
@@ -116,7 +102,6 @@ app.use(async (ctx) => {
       ticketToEdit.description = ctx.request.body.description;
 
       ctx.response.status = 200;
-      saveState();
       break;
     }
 
@@ -125,12 +110,10 @@ app.use(async (ctx) => {
       ticketToEdit.status = ctx.request.body.status === 'true';
 
       ctx.response.status = 200;
-      saveState();
       break;
     }
 
     default:
-      ctx.response.body = "I'm not sleeping!";
       ctx.response.status = 200;
   }
 });
