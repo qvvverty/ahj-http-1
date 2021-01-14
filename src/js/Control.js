@@ -54,9 +54,11 @@ export default class Control {
         if (xhr.readyState === 4) {
           this.openedTicketDescription.innerText = xhr.response;
           this.openedTicketDescription.classList.remove('hidden');
+          this.parentEl.classList.remove('loading');
         }
       });
       xhr.send();
+      this.parentEl.classList.add('loading');
     } else if (this.openedTicketDescription && click.target !== this.openedTicketDescription) {
       this.openedTicketDescription.classList.add('hidden');
       this.openedTicketDescription = null;
@@ -83,9 +85,11 @@ export default class Control {
       xhr.addEventListener('readystatechange', () => {
         if (xhr.readyState === 4) {
           this.renderer.renderTicket(JSON.parse(xhr.response));
+          this.parentEl.classList.remove('loading');
         }
       });
       xhr.send(formData);
+      this.parentEl.classList.add('loading');
 
       this.createTicketForm.classList.add('hidden');
       this.modalBackground.classList.add('hidden');
@@ -98,6 +102,7 @@ export default class Control {
     const xhr = new XMLHttpRequest();
     xhr.open('GET', `https://obscure-depths.herokuapp.com/?method=deleteTicket&id=${this.ticketToDelete.dataset.id}`);
     xhr.addEventListener('readystatechange', () => {
+      if (xhr.readyState === 4) this.parentEl.classList.remove('loading');
       if (xhr.readyState === 4 && xhr.status === 200) {
         this.ticketToDelete.remove();
         this.modalBackground.classList.add('hidden');
@@ -105,6 +110,7 @@ export default class Control {
       }
     });
     xhr.send();
+    this.parentEl.classList.add('loading');
   }
 
   editTicket() {
@@ -117,9 +123,11 @@ export default class Control {
         if (xhr.readyState === 4) {
           this.ticketToEdit.querySelector('.ticket-name').innerText = formData.get('name');
           this.ticketToEdit.querySelector('.ticket-description').innerText = formData.get('description');
+          this.parentEl.classList.remove('loading');
         }
       });
       xhr.send(formData);
+      this.parentEl.classList.add('loading');
 
       this.editTicketForm.classList.add('hidden');
       this.modalBackground.classList.add('hidden');
@@ -153,11 +161,13 @@ export default class Control {
       const xhr = new XMLHttpRequest();
       xhr.open('POST', 'https://obscure-depths.herokuapp.com/?method=changeStatus');
       xhr.addEventListener('readystatechange', () => {
+        if (xhr.readyState === 4) this.parentEl.classList.add('loading');
         if (xhr.readyState === 4 && xhr.status !== 200) {
           checkbox.checked = !checkbox.checked;
         }
       });
       xhr.send(formData);
+      this.parentEl.classList.add('loading');
     }
   }
 }

@@ -20,9 +20,11 @@ export default class Renderer {
     xhr.addEventListener('readystatechange', () => {
       if (xhr.readyState === 4) {
         callback(xhr.response);
+        document.body.classList.remove('loading');
       }
     });
     xhr.send();
+    document.body.classList.add('loading');
   }
 
   renderTicket(ticket) {
