@@ -42,7 +42,8 @@ fs.readFile('./tickets.json', 'utf8', (readErr, data) => {
 
 app.use(async (ctx, next) => {
   ctx.response.set({
-    'Access-Control-Allow-Origin': 'https://qvvverty.github.io',
+    // 'Access-Control-Allow-Origin': 'https://qvvverty.github.io',
+    'Access-Control-Allow-Origin': '*',
   });
   await next();
 });
