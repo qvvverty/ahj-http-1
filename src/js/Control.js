@@ -141,6 +141,16 @@ export default class Control {
       this.ticketToEdit = click.target.closest('.ticket');
       this.modalBackground.classList.remove('hidden');
       this.editTicketForm.classList.remove('hidden');
+
+      const xhr = new XMLHttpRequest();
+      this.editTicketForm.name.value = this.ticketToEdit.querySelector('.ticket-name').innerText.trim();
+      xhr.open('GET', `https://obscure-depths.herokuapp.com/?method=ticketById&id=${click.target.closest('.ticket').dataset.id}`);
+      xhr.addEventListener('readystatechange', () => {
+        if (xhr.readyState === 4) {
+          this.editTicketForm.description.value = xhr.response;
+        }
+      });
+      xhr.send();
     }
   }
 
